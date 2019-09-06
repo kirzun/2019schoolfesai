@@ -2,6 +2,7 @@
 import pygame
 from pygame.locals import *
 import sys
+import numpy as np
 
 SCR_RECT = Rect(0, 0, 1024, 768) #画面サイズ
 BOX = 24
@@ -31,6 +32,7 @@ def main():
             Gameflag = False
         elif (Gameflag) & (keys[K_SPACE]):
             Gameflag = False
+            game.playerflag = False
         for event in pygame.event.get():#イベント処理
             if (event.type == QUIT) | ((Gameflag) & (keys[K_q])):#閉じるボタンが押されたら終了
                 pygame.quit()#Pygameの終了
@@ -59,18 +61,20 @@ class TitleMenu:
     
 class Game:
     def __init__(self):
-        pass
+        self.playerflag = True
+        self.screen = None
+        self.board = np.zeros(8*8).reshape(8, 8)
     
     def update(self):
-        """
-        if 手番がプレイヤーなら
+        if self.playerflag:
             self.player()
-        else
+        else:
             self.ai()
-        """
+
         self.checkBoard()
     
     def draw(self, screen):
+        self.screen = screen
         self.banDraw()
         self.stoneDraw()
         self.banDataDraw()
@@ -78,6 +82,8 @@ class Game:
         self.recordDraw()
     
     def checkBoard(self): #石反転チェック
+        #置かれた場所から8方向を見て反転する石の座標を渡す
+        
         """
         if 石反転できるなら
             self.reversi()
@@ -90,6 +96,9 @@ class Game:
         self.setStone()
     
     def ai(self): #AI処理
+        """
+        AIに盤面を渡して結果を受け取る
+        """
         self.setStone()
     
     def setStone(self): #石配置
