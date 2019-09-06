@@ -5,7 +5,7 @@ import sys
 import numpy as np
 
 SCR_RECT = Rect(0, 0, 1024, 768) #画面サイズ
-BOX = 24
+BOX = 70 #マス目サイズ
 
 def main():
     pygame.init()
@@ -64,14 +64,15 @@ class Game:
         self.playerflag = True
         self.screen = None
         self.board = np.zeros(8*8).reshape(8, 8)
+        self.stonecolor = True #True:白 False:黒
     
     def update(self):
         if self.playerflag:
             self.player()
+            self.stonecolor = not(self.stonecolor)
         else:
             self.ai()
-
-        self.checkBoard()
+            self.stonecolor = not(self.stonecolor)
     
     def draw(self, screen):
         self.screen = screen
@@ -83,6 +84,7 @@ class Game:
     
     def checkBoard(self): #石反転チェック
         #置かれた場所から8方向を見て反転する石の座標を渡す
+        stonecheck = np.zeros(8) #上　下　左　右　左上　右上　左下　右下
         
         """
         if 石反転できるなら
@@ -93,7 +95,9 @@ class Game:
         pass
     
     def player(self): #プレイヤー処理
-        self.setStone()
+        if self.setStone():
+            self.checkBoard()
+        else:
     
     def ai(self): #AI処理
         """
@@ -102,7 +106,18 @@ class Game:
         self.setStone()
     
     def setStone(self): #石配置
-        pass
+        if pygame.mouse.get_pressed()[0]:
+            pos = pygame.mouse.get_pos()
+            #描画されるマス目に合わせる計算
+            #if 置ける範囲内なら
+            if self.stonecolor:
+                self.board[pos[0] / BOX, pos[1] / BOX] = 1
+            else:
+                self.board[pos[0] / BOX, pos[1] / BOX] = 2
+            
+            return True
+        else:
+            return False
     
 #====================================作ってもらうやつここから
     
