@@ -85,7 +85,7 @@ class Game:
         
     def player(self): #プレイヤー処理
         if self.setStone():
-            self.checkBoard()
+            self.checkBoardReversi()
         else:
             #置きなおし処理
     
@@ -95,9 +95,7 @@ class Game:
         """
         self.setStone()
     
-    def checkBoard(self): #石反転チェック
-        #置かれた場所から8方向を見て反転する石の座標を渡す
-        stonecheck = np.zeros(8*8).reshape(8, 8)
+    def checkBoardReversi(self): #チェックと反転
         if self.stonecolor:
             sc = [1, 2]
         else:
@@ -174,14 +172,6 @@ class Game:
                 elif self.board[self.setpos[0] + i, self.setpos[1] + i] == sc[0]:
                     self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
                     break
-            
-        
-        if not stonecheck.all(a == 0):
-            self.reversi(stonecheck)
-    
-    def reversi(self, stonecheck): #石反転
-        pass
-    
     
     def setStone(self): #石配置
         if pygame.mouse.get_pressed()[0]:
