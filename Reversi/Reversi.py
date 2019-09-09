@@ -87,6 +87,7 @@ class Game:
         if self.setStone():
             self.checkBoard()
         else:
+            #置きなおし処理
     
     def ai(self): #AI処理
         """
@@ -96,83 +97,87 @@ class Game:
     
     def checkBoard(self): #石反転チェック
         #置かれた場所から8方向を見て反転する石の座標を渡す
-        stonecheck = np.zeros(8) #上　下　左　右　左上　右上　左下　右下
-        if self.board[self.setpos[0] - 1, self.setpos[1]] == not(self.stonecolor):
+        stonecheck = np.zeros(8*8).reshape(8, 8)
+        if self.stonecolor:
+            sc = [1, 2]
+        else:
+            sc = [2, 1]
+            
+        if self.board[self.setpos[0] - 1, self.setpos[1]] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos[0])):
-                if self.board[self.setpos[0] - i, self.setpos[1]] == 0:
+                if self.board[self.setpos[0] - i, self.setpos[1]] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0] - i, self.setpos[1]] == self.stonecolor:
-                    stonecheck[0] = i - 1;
+                elif self.board[self.setpos[0] - i, self.setpos[1]] == sc[0]:
+                    self.board[self.setpos[0] - 1: self.setpos[0] - i, self.setpos[1]] = sc[0]
                     break
             
-        if self.board[self.setpos[0] + 1, self.setpos[1]] == not(self.stonecolor):
+        if self.board[self.setpos[0] + 1, self.setpos[1]] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos[0])):
-                if self.board[self.setpos[0] + i, self.setpos[1]] == 0:
+                if self.board[self.setpos[0] + i, self.setpos[1]] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0] + i, self.setpos[1]] == self.stonecolor:
-                    stonecheck[1] = i - 1;
+                elif self.board[self.setpos[0] + i, self.setpos[1]] == sc[0]:
+                    self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1]] = sc[0]
                     break
             
-        if self.board[self.setpos[0], self.setpos[1] - 1] == not(self.stonecolor):
+        if self.board[self.setpos[0], self.setpos[1] - 1] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos[1])):
-                if self.board[self.setpos[0], self.setpos[1] - 1] == 0:
+                if self.board[self.setpos[0], self.setpos[1] - 1] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0], self.setpos[1] - 1] == self.stonecolor:
-                    stonecheck[2] = i - 1;
+                elif self.board[self.setpos[0], self.setpos[1] - i] == sc[0]:
+                    self.board[self.setpos[0], self.setpos[1] - 1: self.setpos[1] - i] = sc[0]
                     break
             
-        if self.board[self.setpos[0], self.setpos[1] + 1] == not(self.stonecolor):
+        if self.board[self.setpos[0], self.setpos[1] + 1] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos[1])):
-                if self.board[self.setpos[0], self.setpos[1] + 1] == 0:
+                if self.board[self.setpos[0], self.setpos[1] + 1] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0], self.setpos[1] + 1] == self.stonecolor:
-                    stonecheck[3] = i - 1;
+                elif self.board[self.setpos[0], self.setpos[1] + i] == sc[0]:
+                    self.board[self.setpos[0], self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
                     break
             
-        if self.board[self.setpos[0] - 1, self.setpos[1] - 1] == not(self.stonecolor):
+        if self.board[self.setpos[0] - 1, self.setpos[1] - 1] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] - i, self.setpos[1] - i] == 0:
+                if self.board[self.setpos[0] - i, self.setpos[1] - i] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0] - i, self.setpos[1] - i] == self.stonecolor:
-                    stonecheck[4] = i - 1;
+                elif self.board[self.setpos[0] - i, self.setpos[1] - i] == sc[0]:
+                    self.board[self.setpos[0] - 1: self.setpos[0] - i, self.setpos[1] - 1: self.setpos[1] - i] = sc[0]
                     break
             
-        if self.board[self.setpos[0] - 1, self.setpos[1] + 1] == not(self.stonecolor):
+        if self.board[self.setpos[0] - 1, self.setpos[1] + 1] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] - i, self.setpos[1] + i] == 0:
+                if self.board[self.setpos[0] - i, self.setpos[1] + i] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0] - i, self.setpos[1] + i] == self.stonecolor:
-                    stonecheck[5] = i - 1;
+                elif self.board[self.setpos[0] - i, self.setpos[1] + i] == sc[0]:
+                    self.board[self.setpos[0] - 1: self.setpos[0] - i, self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
                     break
             
-        if self.board[self.setpos[0] + 1, self.setpos[1] - 1] == not(self.stonecolor):
+        if self.board[self.setpos[0] + 1, self.setpos[1] - 1] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] + i, self.setpos[1] - i] == 0:
+                if self.board[self.setpos[0] + i, self.setpos[1] - i] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0] + i, self.setpos[1] - i] == self.stonecolor:
-                    stonecheck[6] = i - 1;
+                elif self.board[self.setpos[0] + i, self.setpos[1] - i] == sc[0]:
+                    self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1] - 1: self.setpos[1] - i] = sc[0]
                     break
             
-        if self.board[self.setpos[0] + 1, self.setpos[1] + 1] == not(self.stonecolor):
+        if self.board[self.setpos[0] + 1, self.setpos[1] + 1] == sc[1]:
             for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] + i, self.setpos[1] + i] == 0:
+                if self.board[self.setpos[0] + i, self.setpos[1] + i] != sc[0]:
                     break
 
-                elif self.board[self.setpos[0] + i, self.setpos[1] + i] == self.stonecolor:
-                    stonecheck[7] = i - 1;
+                elif self.board[self.setpos[0] + i, self.setpos[1] + i] == sc[0]:
+                    self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
                     break
             
         
-        if stonecheck.all(a == 0):
+        if not stonecheck.all(a == 0):
             self.reversi(stonecheck)
-        
     
     def reversi(self, stonecheck): #石反転
         pass
