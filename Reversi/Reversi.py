@@ -67,6 +67,7 @@ class Game:
         self.board[3:5, 3:5] = [[1, 2], [2, 1]]
         self.stonecolor = True #True:白 False:黒
         self.setpos = np.zeros(2)
+        self.cb = np.array(([-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]))
     
     def update(self):
         if self.playerflag:
@@ -111,28 +112,32 @@ class Game:
             return False
     
     def checkBoardReversi(self): #チェックと反転
-        #上下左右斜め時計回り
-        cb = np.array([[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]])
         tp = self.setpos
+        flag = False
         
-        for i, tc in enumerate(cb):
+        for i, tc in enumerate(self.cb):
             c = tc.copy()
             st = self.board[tp[0], tp[1]]
             nst = self.board[tp[0] + c[0], tp[1] + c[1]]
             if nst != 0 and nst != st:
                 for j in range(1, 8):
-                    c += cb[i]
+                    c += self.cb[i]
                     if 0 > tp[0] + c[0] > 7 or 0 > tp[1] + c[1] > 7:
                         break
                     elif self.board[tp[0] + c[0], tp[1] + c[1]] == 0:
                         break
                     elif self.board[tp[0] + c[0], tp[1] + c[1]] == st:
                         for k in range(j, 0, -1):
-                            c -= cb[i]
+                            c -= self.cb[i]
                             self.board[tp[0] + c[0], tp[1] + c[1]] = st
+                        flag = True
                         break
+                    
+        if flag:
+            return True
+        else:
+            return False
             
-    
     def setStone(self): #石配置
         if pygame.mouse.get_pressed()[0]:
             pygame.time.wait(100) #処理が速すぎるので100ミリ秒止める
@@ -140,9 +145,15 @@ class Game:
             #if 置ける範囲内なら(描画処理に合わせる)
             self.setpos = [int(pos[1] / BOX), int(pos[0] / BOX)]
             if self.stonecolor:
-                self.board[self.setpos[0], self.setpos[1]] = 1
+                if self.board[self.setpos[0], self.setpos[1]] == 0:
+                    self.board[self.setpos[0], self.setpos[1]] = 1
+                    if not self.checkBoardReversi():
+                        self.board[self.setpos[0], self.setpos[1]] = 0
             else:
-                self.board[self.setpos[0], self.setpos[1]] = 2
+                if self.board[self.setpos[0], self.setpos[1]] == 0:
+                    self.board[self.setpos[0], self.setpos[1]] = 2
+                    if not self.checkBoardReversi():
+                        self.board[self.setpos[0], self.setpos[1]] = 0
             
             return True
         else:
