@@ -64,6 +64,7 @@ class Game:
         self.playerflag = True
         self.screen = None
         self.board = np.zeros(8*8).reshape(8, 8)
+        self.board[3:5, 3:5] = [[1, 2], [2, 1]]
         self.stonecolor = True #True:白 False:黒
         self.setpos = np.zeros(2)
     
