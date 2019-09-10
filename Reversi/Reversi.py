@@ -89,7 +89,6 @@ class Game:
         
     def player(self): #プレイヤー処理
         if self.setStone():
-            self.checkBoardReversi()
             print("pl")
             print(self.board)
             
@@ -103,7 +102,6 @@ class Game:
         AIに盤面を渡して結果を受け取る
         """
         if self.setStone():
-            self.checkBoardReversi()
             print("ai")
             print(self.board)
             
@@ -149,13 +147,16 @@ class Game:
                     self.board[self.setpos[0], self.setpos[1]] = 1
                     if not self.checkBoardReversi():
                         self.board[self.setpos[0], self.setpos[1]] = 0
+                    else:
+                        return True
             else:
                 if self.board[self.setpos[0], self.setpos[1]] == 0:
                     self.board[self.setpos[0], self.setpos[1]] = 2
                     if not self.checkBoardReversi():
                         self.board[self.setpos[0], self.setpos[1]] = 0
+                    else:
+                        return True
             
-            return True
         else:
             return False
 
