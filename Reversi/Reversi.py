@@ -65,15 +65,17 @@ class Game:
         self.screen = None
         self.board = np.zeros(8*8).reshape(8, 8)
         self.stonecolor = True #True:白 False:黒
-        self.setpos = [0, 0]
+        self.setpos = np.zeros(2)
     
     def update(self):
         if self.playerflag:
-            self.player()
-            self.stonecolor = not(self.stonecolor)
+            if self.player():
+                self.stonecolor = not(self.stonecolor)
+                self.playerflag = not(self.playerflag)
         else:
-            self.ai()
-            self.stonecolor = not(self.stonecolor)
+            if self.ai():
+                self.stonecolor = not(self.stonecolor)
+                self.playerflag = not(self.playerflag)
     
     def draw(self, screen):
         self.screen = screen
@@ -86,107 +88,65 @@ class Game:
     def player(self): #プレイヤー処理
         if self.setStone():
             self.checkBoardReversi()
+            print("pl")
+            print(self.board)
+            
+            return True
         else:
+            return False
             #置きなおし処理
     
     def ai(self): #AI処理
         """
         AIに盤面を渡して結果を受け取る
         """
-        self.setStone()
-    
-    def checkBoardReversi(self): #チェックと反転
-        if self.stonecolor:
-            sc = [1, 2]
-        else:
-            sc = [2, 1]
-            
-        if self.board[self.setpos[0] - 1, self.setpos[1]] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos[0])):
-                if self.board[self.setpos[0] - i, self.setpos[1]] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0] - i, self.setpos[1]] == sc[0]:
-                    self.board[self.setpos[0] - 1: self.setpos[0] - i, self.setpos[1]] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0] + 1, self.setpos[1]] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos[0])):
-                if self.board[self.setpos[0] + i, self.setpos[1]] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0] + i, self.setpos[1]] == sc[0]:
-                    self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1]] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0], self.setpos[1] - 1] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos[1])):
-                if self.board[self.setpos[0], self.setpos[1] - 1] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0], self.setpos[1] - i] == sc[0]:
-                    self.board[self.setpos[0], self.setpos[1] - 1: self.setpos[1] - i] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0], self.setpos[1] + 1] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos[1])):
-                if self.board[self.setpos[0], self.setpos[1] + 1] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0], self.setpos[1] + i] == sc[0]:
-                    self.board[self.setpos[0], self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0] - 1, self.setpos[1] - 1] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] - i, self.setpos[1] - i] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0] - i, self.setpos[1] - i] == sc[0]:
-                    self.board[self.setpos[0] - 1: self.setpos[0] - i, self.setpos[1] - 1: self.setpos[1] - i] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0] - 1, self.setpos[1] + 1] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] - i, self.setpos[1] + i] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0] - i, self.setpos[1] + i] == sc[0]:
-                    self.board[self.setpos[0] - 1: self.setpos[0] - i, self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0] + 1, self.setpos[1] - 1] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] + i, self.setpos[1] - i] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0] + i, self.setpos[1] - i] == sc[0]:
-                    self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1] - 1: self.setpos[1] - i] = sc[0]
-                    break
-            
-        if self.board[self.setpos[0] + 1, self.setpos[1] + 1] == sc[1]:
-            for i in range(1, 8 - (8 - self.setpos.min())):
-                if self.board[self.setpos[0] + i, self.setpos[1] + i] != sc[0]:
-                    break
-
-                elif self.board[self.setpos[0] + i, self.setpos[1] + i] == sc[0]:
-                    self.board[self.setpos[0] + 1: self.setpos[0] + i, self.setpos[1] + 1: self.setpos[1] + i] = sc[0]
-                    break
-    
-    def setStone(self): #石配置
-        if pygame.mouse.get_pressed()[0]:
-            pos = pygame.mouse.get_pos()
-            #if 置ける範囲内なら
-            self.setpos = ([pos[0] / BOX, pos[1] / BOX])
-            if self.stonecolor:
-                self.board[self.setpos] = 1
-            else:
-                self.board[self.setpos] = 2
+        if self.setStone():
+            self.checkBoardReversi()
+            print("ai")
+            print(self.board)
             
             return True
         else:
             return False
     
+    def checkBoardReversi(self): #チェックと反転
+        #上下左右斜め時計回り
+        cb = np.array([[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]])
+        tp = self.setpos
+        
+        for i, tc in enumerate(cb):
+            c = tc.copy()
+            st = self.board[tp[0], tp[1]]
+            nst = self.board[tp[0] + c[0], tp[1] + c[1]]
+            if nst != 0 and nst != st:
+                for j in range(1, 8):
+                    c += cb[i]
+                    if 0 > tp[0] + c[0] > 7 or 0 > tp[1] + c[1] > 7:
+                        break
+                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == 0:
+                        break
+                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == st:
+                        for k in range(j, 0, -1):
+                            c -= cb[i]
+                            self.board[tp[0] + c[0], tp[1] + c[1]] = st
+                        break
+            
+    
+    def setStone(self): #石配置
+        if pygame.mouse.get_pressed()[0]:
+            pygame.time.wait(100) #処理が速すぎるので100ミリ秒止める
+            pos = pygame.mouse.get_pos()
+            #if 置ける範囲内なら(描画処理に合わせる)
+            self.setpos = [int(pos[1] / BOX), int(pos[0] / BOX)]
+            if self.stonecolor:
+                self.board[self.setpos[0], self.setpos[1]] = 1
+            else:
+                self.board[self.setpos[0], self.setpos[1]] = 2
+            
+            return True
+        else:
+            return False
+
 #====================================作ってもらうやつここから
     
     def banDraw(self): #盤面描画
@@ -205,9 +165,6 @@ class Game:
         pass
     
 #====================================ここまで
-        
-def sceneMgr():
-    pass
     
 if __name__ == "__main__":
     main()
