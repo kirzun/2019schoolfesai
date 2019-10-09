@@ -163,6 +163,34 @@ class Game:
 #====================================作ってもらうやつここから
     
     def banDraw(self): #盤面描画
+        pygame.init() #これいる？
+        SURFACE=pygame.display.set_mode(SCR_RECT.size)
+        pygame.display.set_caption("俺つよ")
+        font=pygame.font.Font(None,50)
+        SURFACE.fill((0,0,0))
+        pygame.draw.rect(SURFACE,(0,100,0),(200,150,560,560)) #緑のやつ
+        #勝率表示
+        grades=font.render("win:"+str(1)+" lose:"+str(1)+" draw:"+str(1),True,(255,255,255))
+        SURFACE.blit(grades,[300,100])
+
+        #縦線
+        for xpos in range(200,761,70):
+            pygame.draw.line(SURFACE,0xFFFFFF,(xpos,710),(xpos,150))
+        #横線
+        for ypos in range(150,740,70):
+            pygame.draw.line(SURFACE,0xFFFFFF,(200,ypos),(760,ypos))
+
+        if self.playerflag == True:
+            text=font.render("Turn:prayer",True,(255,255,255))
+            SURFACE.blit(text,[800,300])
+        else:
+            text=font.render("Turn:AI",True,(255,255,255))
+            SURFACE.blit(text,[800,300])
+        #白の数,黒の数を表示
+        black_count=font.render("black:"+str(20),True,(255,255,255)) #変数を入れる
+        SURFACE.blit(black_count,[800,350])
+        white_count=font.render("white:"+str(20),True,(255,255,255)) #変数を入れる
+        SURFACE.blit(white_count,[800,400])
         pass
     
     def stoneDraw(self): #石描画
@@ -172,7 +200,7 @@ class Game:
                 if(self.board[x,y]==1):   """一マス70*70 全体200,150,"""
                     pygame.draw.circle(self.screen,(0,0,0),(400,300),30)
     
-    def banDataDraw(self): #盤面情報描画
+    def banDataDraw(self): #盤面情報描画 盤面描画とまとめたかも
         pass
     
     def resultDraw(self): #戦績描画
