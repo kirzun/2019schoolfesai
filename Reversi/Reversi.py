@@ -68,16 +68,29 @@ class Game:
         self.stonecolor = True #True:白 False:黒
         self.setpos = np.zeros(2)
         self.cb = np.array(([-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]))
+        self.skipflag = False
+        self.endcount = 0
+        self.endflag = False
     
     def update(self):
-        if self.playerflag:
-            if self.player():
-                self.stonecolor = not(self.stonecolor)
-                self.playerflag = not(self.playerflag)
+        if self.skipflag:
+            self.skipflag = not(self.skipflag)
+            if self.endGame():
+                self.endcount += 1
+                if self.endcount == 2:
+                    self.endflag = True
+                elif self.playerflag:
+                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+                else:
+                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
         else:
-            if self.ai():
-                self.stonecolor = not(self.stonecolor)
-                self.playerflag = not(self.playerflag)
+            self.endcount = 0
+            if self.playerflag:
+                if self.player():
+                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+            else:
+                if self.ai():
+                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
     
     def draw(self, screen):
         self.screen = screen
@@ -85,7 +98,8 @@ class Game:
         self.stoneDraw()
         self.banDataDraw()
         self.resultDraw()
-        self.recordDraw()
+        if self.endflag:
+            self.recordDraw()
         
     def player(self): #プレイヤー処理
         if self.setStone():
@@ -95,7 +109,6 @@ class Game:
             return True
         else:
             return False
-            #置きなおし処理
     
     def ai(self): #AI処理
         """
@@ -130,7 +143,6 @@ class Game:
                             self.board[tp[0] + c[0], tp[1] + c[1]] = st
                         flag = True
                         break
-                    
         if flag:
             return True
         else:
@@ -156,9 +168,29 @@ class Game:
                         self.board[self.setpos[0], self.setpos[1]] = 0
                     else:
                         return True
-            
         else:
             return False
+        
+    def endGame(self): #終了処理
+        tp = self.setpos
+        
+        for i, tc in enumerate(self.cb):
+            c = tc.copy()
+            st = self.board[tp[0], tp[1]]
+            nst = self.board[tp[0] + c[0], tp[1] + c[1]]
+            if nst != 0 and nst != st:
+                for j in range(1, 8):
+                    c += self.cb[i]
+                    if 0 > tp[0] + c[0] > 7 or 0 > tp[1] + c[1] > 7:
+                        break
+                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == 0:
+                        break
+                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == st:
+                        return False
+        return True
+    
+    def boolNot(self, a, b, c): #boolean反転
+        return not(a), not(b), not(c)
 
 #====================================作ってもらうやつここから
     
