@@ -223,11 +223,17 @@ class Game:
         pass
     
     def stoneDraw(self): #石描画
-        """pass"""
         for x in range(0,8):
             for y in range(0,8):
-                if(self.board[x,y]==1):   """一マス70*70 全体200,150,"""
-                    pygame.draw.circle(self.screen,(0,0,0),(400,300),30)
+                if self.board[x,y]==1:
+                    pygame.draw.circle(self.screen,(255,255,255),(235+(70*x),185+(70*y)),30)
+                elif self.board[x,y]==2:
+                    pygame.draw.circle(self.screen,(0,0,0),(235+(70*x),185+(70*y)),30)
+                else:
+                    pass
+        
+                    
+                
     
     def banDataDraw(self): #盤面情報描画 盤面描画とまとめた
         pass
