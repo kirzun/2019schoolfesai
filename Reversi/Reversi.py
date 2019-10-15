@@ -3,7 +3,9 @@ import pygame
 from pygame.locals import *
 import sys
 import numpy as np
+from Reversi_ai import reversiAI
 
+AI = reversiAI
 SCR_RECT = Rect(0, 0, 1024, 768) #画面サイズ
 BOX = 70 #マス目サイズ
 
@@ -103,9 +105,6 @@ class Game:
         
     def player(self): #プレイヤー処理
         if self.setStone():
-            print("pl")
-            print(self.board)
-            
             return True
         else:
             return False
@@ -114,10 +113,8 @@ class Game:
         """
         AIに盤面を渡して結果を受け取る
         """
+        
         if self.setStone():
-            print("ai")
-            print(self.board)
-            
             return True
         else:
             return False
@@ -125,24 +122,25 @@ class Game:
     def checkBoardReversi(self): #チェックと反転
         tp = self.setpos
         flag = False
+        st = self.board[tp[0], tp[1]]
         
         for i, tc in enumerate(self.cb):
             c = tc.copy()
-            st = self.board[tp[0], tp[1]]
-            nst = self.board[tp[0] + c[0], tp[1] + c[1]]
-            if nst != 0 and nst != st:
-                for j in range(1, 8):
-                    c += self.cb[i]
-                    if 0 > tp[0] + c[0] > 7 or 0 > tp[1] + c[1] > 7:
-                        break
-                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == 0:
-                        break
-                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == st:
-                        for k in range(j, 0, -1):
-                            c -= self.cb[i]
-                            self.board[tp[0] + c[0], tp[1] + c[1]] = st
-                        flag = True
-                        break
+            if 0 <= tp[0] + c[0] <= 7 and 0 <= tp[1] + c[1] <= 7:
+                nst = self.board[tp[0] + c[0], tp[1] + c[1]]
+                if nst != 0 and nst != st:
+                    for j in range(1, 8):
+                        c += self.cb[i]
+                        if not 0 <= tp[0] + c[0] <= 7 or not 0 <= tp[1] + c[1] <= 7:
+                            break
+                        elif self.board[tp[0] + c[0], tp[1] + c[1]] == 0:
+                            break
+                        elif self.board[tp[0] + c[0], tp[1] + c[1]] == st:
+                            for k in range(j, 0, -1):
+                                c -= self.cb[i]
+                                self.board[tp[0] + c[0], tp[1] + c[1]] = st
+                            flag = True
+                            break
         if flag:
             return True
         else:
@@ -152,41 +150,45 @@ class Game:
         if pygame.mouse.get_pressed()[0]:
             pygame.time.wait(100) #処理が速すぎるので100ミリ秒止める
             pos = pygame.mouse.get_pos()
-            #if 置ける範囲内なら(描画処理に合わせる)
-            self.setpos = [int(pos[1] / BOX), int(pos[0] / BOX)]
-            if self.stonecolor:
-                if self.board[self.setpos[0], self.setpos[1]] == 0:
-                    self.board[self.setpos[0], self.setpos[1]] = 1
-                    if not self.checkBoardReversi():
-                        self.board[self.setpos[0], self.setpos[1]] = 0
-                    else:
-                        return True
-            else:
-                if self.board[self.setpos[0], self.setpos[1]] == 0:
-                    self.board[self.setpos[0], self.setpos[1]] = 2
-                    if not self.checkBoardReversi():
-                        self.board[self.setpos[0], self.setpos[1]] = 0
-                    else:
-                        return True
+            if 200 <= pos[0] <= 760 and 150 <= pos[1] <= 710:
+                self.setpos = [int((pos[0] - 200) / BOX), int((pos[1] - 150) / BOX)]
+                if self.stonecolor:
+                    if self.board[self.setpos[0], self.setpos[1]] == 0:
+                        self.board[self.setpos[0], self.setpos[1]] = 1
+                        if not self.checkBoardReversi():
+                            self.board[self.setpos[0], self.setpos[1]] = 0
+                        else:
+                            return True
+                else:
+                    if self.board[self.setpos[0], self.setpos[1]] == 0:
+                        self.board[self.setpos[0], self.setpos[1]] = 2
+                        if not self.checkBoardReversi():
+                            self.board[self.setpos[0], self.setpos[1]] = 0
+                        else:
+                            return True
         else:
             return False
         
     def endGame(self): #終了処理
         tp = self.setpos
+        st = self.board[tp[0], tp[1]]
         
-        for i, tc in enumerate(self.cb):
-            c = tc.copy()
-            st = self.board[tp[0], tp[1]]
-            nst = self.board[tp[0] + c[0], tp[1] + c[1]]
-            if nst != 0 and nst != st:
-                for j in range(1, 8):
-                    c += self.cb[i]
-                    if 0 > tp[0] + c[0] > 7 or 0 > tp[1] + c[1] > 7:
-                        break
-                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == 0:
-                        break
-                    elif self.board[tp[0] + c[0], tp[1] + c[1]] == st:
-                        return False
+        for x in range(0, 8):
+            for y in range(0, 8):
+                for i, tc in enumerate(self.cb):
+                    c = tc.copy()
+                    if 0 <= x + c[0] <= 7 and 0 <= y + c[1] <= 7:
+                        nst = self.board[x + c[0], y + c[1]]
+                        if nst != 0 and nst != st:
+                            for j in range(1, 8):
+                                c += self.cb[i]
+                                if not 0 <= x + c[0] <= 7 or not 0 <= y + c[1] <= 7:
+                                    break
+                                elif self.board[x + c[0], y + c[1]] == 0:
+                                    break
+                                elif self.board[x + c[0], y + c[1]] == st:
+                                    return False
+                                
         return True
     
     def boolNot(self, a, b, c): #boolean反転
