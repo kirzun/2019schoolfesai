@@ -232,7 +232,16 @@ class Game:
         pass
     
     def recordDraw(self): #勝敗結果描画
-
+        font=pygame.font.Font(None,150)
+        #pygame.draw.rect(self.screen,(255,255,255),(230,350,500,130))
+        #if
+        lose=font.render("player:lose",True,(0,0,0))
+        pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
+        self.screen.blit(lose,[200,358])
+        #else:
+        lose=font.render("AI:lose",True,(0,0,0))
+        pygame.draw.rect(self.screen,(255,255,255),(230,350,500,110))
+        self.screen.blit(lose,[300,358])
         pass
     
 #====================================ここまで
