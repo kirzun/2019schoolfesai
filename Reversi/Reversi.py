@@ -87,7 +87,7 @@ class Game:
                     self.endflag = True
                     if self.plsc:
                         if self.stonek[0] < self.stonek[1]:
-                            self.lose = False
+                            self.win = False
                 elif self.playerflag:
                     self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
                 else:
@@ -118,12 +118,15 @@ class Game:
     
     def ai(self): #AI処理
         pos = AI.play(self.board, self.stonecolor)
+        self.setpos = pos
         if self.stonecolor:
             self.board[pos[0], pos[1]] = 1
-            if self.checkBoardReversi(): return True
+            if self.checkBoardReversi():
+                return True
         else:
             self.board[pos[0], pos[1]] = 2
-            if self.checkBoardReversi(): return True
+            if self.checkBoardReversi():
+                return True
     
     def checkBoardReversi(self): #チェックと反転
         tp = self.setpos
