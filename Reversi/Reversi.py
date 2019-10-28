@@ -35,6 +35,7 @@ def main():
         elif (Gameflag) & (keys[K_SPACE]):
             Gameflag = False
             game.playerflag = False
+            game.plsc = False
         for event in pygame.event.get():#イベント処理
             if (event.type == QUIT) | ((Gameflag) & (keys[K_q])):#閉じるボタンが押されたら終了
                 pygame.quit()#Pygameの終了
@@ -73,33 +74,37 @@ class Game:
         self.endcount = 0
         self.endflag = False
         self.stonek = [2, 2] #石数カウント　白　黒
+        self.lose = True # True:プレイヤーの負け False:AIの負け
+        self.plsc = True
     
     def update(self):
-        if self.endGame(self.stonecolor):
-            self.endcount += 1
-            if self.endcount == 2:
-                self.endflag = True
-            elif self.playerflag:
-                self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
-            else:
-                self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
-        else:
-            self.endcount = 0
-            if self.playerflag:
-                if self.player():
-                    self.stoneCount()
+        if not self.endflag:
+            if self.endGame(self.stonecolor):
+                self.endcount += 1
+                if self.endcount == 2:
+                    self.endflag = True
+                    if self.plsc:
+                        if self.stonek[0] > self.stonek[1]:
+                            self.lose = False
+                elif self.playerflag:
+                    self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
+                else:
                     self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
             else:
-                if self.ai():
-                    self.stoneCount()
-                    self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
+                self.endcount = 0
+                if self.playerflag:
+                    if self.player():
+                        self.stoneCount()
+                        self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
+                else:
+                    if self.ai():
+                        self.stoneCount()
+                        self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
     
     def draw(self, screen):
         self.screen = screen
         self.banDraw()
         self.stoneDraw()
-        self.banDataDraw()
-        self.resultDraw()
         if self.endflag:
             self.recordDraw()
         
@@ -222,11 +227,10 @@ class Game:
             text=font.render("Turn:AI",True,(255,255,255))
             self.screen.blit(text,[800,300])
         #白の数,黒の数を表示
-        black_count=font.render("black:"+str(self.stonek[0]),True,(255,255,255)) #変数を入れる
+        black_count=font.render("black:"+str(self.stonek[1]),True,(255,255,255)) #変数を入れる
         self.screen.blit(black_count,[800,350])
-        white_count=font.render("white:"+str(self.stonek[1]),True,(255,255,255)) #変数を入れる
+        white_count=font.render("white:"+str(self.stonek[0]),True,(255,255,255)) #変数を入れる
         self.screen.blit(white_count,[800,400])
-        pass
     
     def stoneDraw(self): #石描画
         for x in range(0,8):
@@ -238,14 +242,14 @@ class Game:
     
     def recordDraw(self): #勝敗結果描画
         font=pygame.font.Font(None,150)
-        #if
-        lose=font.render("player:lose",True,(0,0,0))
-        pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
-        self.screen.blit(lose,[200,358])
-        #else:
-        lose=font.render("AI:lose",True,(0,0,0))
-        pygame.draw.rect(self.screen,(255,255,255),(230,350,500,110))
-        self.screen.blit(lose,[300,358])
+        if self.lose:
+            lose=font.render("player:lose",True,(0,0,0))
+            pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
+            self.screen.blit(lose,[200,358])
+        else:
+            lose=font.render("AI:lose",True,(0,0,0))
+            pygame.draw.rect(self.screen,(255,255,255),(230,350,500,110))
+            self.screen.blit(lose,[300,358])
     
 #====================================ここまで
     
