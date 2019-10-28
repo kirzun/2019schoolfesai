@@ -107,6 +107,8 @@ class Game:
         self.screen = screen
         self.banDraw()
         self.stoneDraw()
+        if not self.playerflag:
+            self.AImoveDraw()
         if self.endflag:
             self.recordDraw()
         
@@ -117,7 +119,7 @@ class Game:
             return False
     
     def ai(self): #AI処理
-        pos = AI.play(self.board, self.stonecolor)
+        _, pos = AI.play(self.board, self.stonecolor)
         self.setpos = pos
         if self.stonecolor:
             self.board[pos[0], pos[1]] = 1
@@ -206,6 +208,12 @@ class Game:
     
     def stoneCount(self): #石数カウント
         self.stonek = [np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 2)]
+        
+    def AImoveDraw(self): # AI思考中の表示
+        font = pygame.font.Font("ipaexg.ttf", 100)
+        AImove = font.render("～AI思考中～",True,(0,0,0))
+        pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
+        self.screen.blit(AImove,[185, 365])
 
 #====================================作ってもらうやつここから
     
