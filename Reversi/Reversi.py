@@ -6,7 +6,7 @@ import numpy as np
 from Reversi_ai import reversiAI
 import os
 
-AI = reversiAI
+AI = reversiAI()
 SCR_RECT = Rect(0, 0, 1024, 768) #画面サイズ
 BOX = 70 #マス目サイズ
 
@@ -117,14 +117,13 @@ class Game:
             return False
     
     def ai(self): #AI処理
-        """
-        AIに盤面を渡して結果を受け取る
-        """
-        
-        if self.setStone():
-            return True
+        pos = AI.play(self.board, self.stonecolor)
+        if self.stonecolor:
+            self.board[pos[0], pos[1]] = 1
+            if self.checkBoardReversi(): return True
         else:
-            return False
+            self.board[pos[0], pos[1]] = 2
+            if self.checkBoardReversi(): return True
     
     def checkBoardReversi(self): #チェックと反転
         tp = self.setpos
@@ -158,7 +157,7 @@ class Game:
             pygame.time.wait(100) #処理が速すぎるので100ミリ秒止める
             pos = pygame.mouse.get_pos()
             if 200 <= pos[0] <= 760 and 150 <= pos[1] <= 710:
-                self.setpos = [int((pos[0] - 200) / BOX), int((pos[1] - 150) / BOX)]
+                self.setpos = [int((pos[1] - 150) / BOX), int((pos[0] - 200) / BOX)]
                 if self.stonecolor:
                     if self.board[self.setpos[0], self.setpos[1]] == 0:
                         self.board[self.setpos[0], self.setpos[1]] = 1
@@ -238,9 +237,9 @@ class Game:
         for x in range(0,8):
             for y in range(0,8):
                 if self.board[x,y]==1:
-                    pygame.draw.circle(self.screen,(255,255,255),(235+(70*x),185+(70*y)),30)
+                    pygame.draw.circle(self.screen,(255,255,255),(235+(70*y),185+(70*x)),30)
                 elif self.board[x,y]==2:
-                    pygame.draw.circle(self.screen,(0,0,0),(235+(70*x),185+(70*y)),30)
+                    pygame.draw.circle(self.screen,(0,0,0),(235+(70*y),185+(70*x)),30)
     
     def recordDraw(self): #勝敗結果描画
         font=pygame.font.Font(None,150)
