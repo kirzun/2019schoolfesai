@@ -4,6 +4,7 @@ from pygame.locals import *
 import sys
 import numpy as np
 from Reversi_ai import reversiAI
+import os
 
 AI = reversiAI
 SCR_RECT = Rect(0, 0, 1024, 768) #画面サイズ
@@ -252,6 +253,21 @@ class Game:
             self.screen.blit(win,[300,358])
     
 #====================================ここまで
+            
+def load_image(filename, colorkey=None):
+    """画像をロードして画像と矩形を返す"""
+    filename = os.path.join("image", filename)
+    try:
+        image = pygame.image.load(filename)
+    except pygame.error as message:
+        print("Cannot load image:", filename)
+        raise SystemExit(message)
+    image = image.convert()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
     
 if __name__ == "__main__":
     main()
