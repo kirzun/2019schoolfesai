@@ -47,6 +47,7 @@ def main():
 
 class TitleMenu:
     def __init__(self):
+        self.image, self.rect = load_image("oretuyo.png")
         self.titlefont = pygame.font.Font(None, 210)
         self.title = self.titlefont.render("Reversi", True, (190,180,190))
         self.menufont = pygame.font.Font("ipaexg.ttf", 48)
@@ -256,7 +257,7 @@ class Game:
             
 def load_image(filename, colorkey=None):
     """画像をロードして画像と矩形を返す"""
-    filename = os.path.join("image", filename)
+    filename = os.path.join("images", filename)
     try:
         image = pygame.image.load(filename)
     except pygame.error as message:
