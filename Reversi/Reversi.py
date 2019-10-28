@@ -48,8 +48,6 @@ def main():
 class TitleMenu:
     def __init__(self):
         self.image, self.rect = load_image("oretuyo.png")
-        self.titlefont = pygame.font.Font(None, 210)
-        self.title = self.titlefont.render("Reversi", True, (190,180,190))
         self.menufont = pygame.font.Font("ipaexg.ttf", 48)
         self.gmenu1 = self.menufont.render("先攻:ENTER", True, (160,190,230), (10,10,10))
         self.gmenu2 = self.menufont.render("後攻:SPACE", True, (160,190,230), (10,10,10))
@@ -59,7 +57,9 @@ class TitleMenu:
         pass
     
     def draw(self, screen):
-        screen.blit(self.title, (245, 175))
+        x = (SCR_RECT.size[0] - self.image.get_width()) / 2
+        y = (SCR_RECT.size[1] - self.image.get_height()) / 3.5
+        screen.blit(self.image, (x, y))
         screen.blit(self.gmenu1, (380, 425))
         screen.blit(self.gmenu2, (380, 475))
         screen.blit(self.qmenu, (380, 525))
