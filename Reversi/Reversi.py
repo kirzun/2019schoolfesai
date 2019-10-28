@@ -72,6 +72,7 @@ class Game:
         self.cb = np.array(([-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]))
         self.endcount = 0
         self.endflag = False
+        self.stonek = [2, 2] #石数カウント　白　黒
     
     def update(self):
         if self.endGame(self.stonecolor):
@@ -86,9 +87,11 @@ class Game:
             self.endcount = 0
             if self.playerflag:
                 if self.player():
+                    self.stoneCount()
                     self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
             else:
                 if self.ai():
+                    self.stoneCount()
                     self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
     
     def draw(self, screen):
@@ -191,6 +194,9 @@ class Game:
                                         return False
                                 
         return True
+    
+    def stoneCount(self): #石数カウント
+        self.stonek = [np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 2)]
 
 #====================================作ってもらうやつここから
     
@@ -216,9 +222,9 @@ class Game:
             text=font.render("Turn:AI",True,(255,255,255))
             self.screen.blit(text,[800,300])
         #白の数,黒の数を表示
-        black_count=font.render("black:"+str(20),True,(255,255,255)) #変数を入れる
+        black_count=font.render("black:"+str(self.stonek[0]),True,(255,255,255)) #変数を入れる
         self.screen.blit(black_count,[800,350])
-        white_count=font.render("white:"+str(20),True,(255,255,255)) #変数を入れる
+        white_count=font.render("white:"+str(self.stonek[1]),True,(255,255,255)) #変数を入れる
         self.screen.blit(white_count,[800,400])
         pass
     
@@ -230,12 +236,6 @@ class Game:
                 elif self.board[x,y]==2:
                     pygame.draw.circle(self.screen,(0,0,0),(235+(70*x),185+(70*y)),30)
     
-    def banDataDraw(self): #盤面情報描画 盤面描画とまとめた
-        pass
-    
-    def resultDraw(self): #戦績描画　盤面描画とまとめた
-        pass
-    
     def recordDraw(self): #勝敗結果描画
         font=pygame.font.Font(None,150)
         #if
@@ -246,7 +246,6 @@ class Game:
         lose=font.render("AI:lose",True,(0,0,0))
         pygame.draw.rect(self.screen,(255,255,255),(230,350,500,110))
         self.screen.blit(lose,[300,358])
-        pass
     
 #====================================ここまで
     
