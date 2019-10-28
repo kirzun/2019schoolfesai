@@ -70,7 +70,6 @@ class Game:
         self.stonecolor = True #True:白 False:黒
         self.setpos = np.zeros(2)
         self.cb = np.array(([-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]))
-        self.skipflag = False
         self.endcount = 0
         self.endflag = False
     
@@ -80,17 +79,17 @@ class Game:
             if self.endcount == 2:
                 self.endflag = True
             elif self.playerflag:
-                self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+                self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
             else:
-                self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+                self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
         else:
             self.endcount = 0
             if self.playerflag:
                 if self.player():
-                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+                    self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
             else:
                 if self.ai():
-                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+                    self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
     
     def draw(self, screen):
         self.screen = screen
@@ -192,9 +191,6 @@ class Game:
                                         return False
                                 
         return True
-    
-    def boolNot(self, a, b, c): #boolean反転
-        return not(a), not(b), not(c)
 
 #====================================作ってもらうやつここから
     
