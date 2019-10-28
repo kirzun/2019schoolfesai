@@ -75,16 +75,14 @@ class Game:
         self.endflag = False
     
     def update(self):
-        if self.skipflag:
-            self.skipflag = not(self.skipflag)
-            if self.endGame():
-                self.endcount += 1
-                if self.endcount == 2:
-                    self.endflag = True
-                elif self.playerflag:
-                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
-                else:
-                    self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+        if self.endGame(self.stonecolor):
+            self.endcount += 1
+            if self.endcount == 2:
+                self.endflag = True
+            elif self.playerflag:
+                self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
+            else:
+                self.stonecolor, self.playerflag, self.skipflag = self.boolNot(self.stonecolor, self.playerflag, self.skipflag)
         else:
             self.endcount = 0
             if self.playerflag:
@@ -169,25 +167,29 @@ class Game:
         else:
             return False
         
-    def endGame(self): #終了処理
-        tp = self.setpos
-        st = self.board[tp[0], tp[1]]
-        
+    def endGame(self, st): #終了処理
+        if not np.any(self.board == 0):
+            return True
+        if st:
+            st = 1
+        else:
+            st = 2
         for x in range(0, 8):
             for y in range(0, 8):
-                for i, tc in enumerate(self.cb):
-                    c = tc.copy()
-                    if 0 <= x + c[0] <= 7 and 0 <= y + c[1] <= 7:
-                        nst = self.board[x + c[0], y + c[1]]
-                        if nst != 0 and nst != st:
-                            for j in range(1, 8):
-                                c += self.cb[i]
-                                if not 0 <= x + c[0] <= 7 or not 0 <= y + c[1] <= 7:
-                                    break
-                                elif self.board[x + c[0], y + c[1]] == 0:
-                                    break
-                                elif self.board[x + c[0], y + c[1]] == st:
-                                    return False
+                if self.board[x, y] == 0:
+                    for i, tc in enumerate(self.cb):
+                        c = tc.copy()
+                        if 0 <= x + c[0] <= 7 and 0 <= y + c[1] <= 7:
+                            nst = self.board[x + c[0], y + c[1]]
+                            if nst != 0 and nst != st:
+                                for j in range(1, 8):
+                                    c += self.cb[i]
+                                    if not 0 <= x + c[0] <= 7 or not 0 <= y + c[1] <= 7:
+                                        break
+                                    elif self.board[x + c[0], y + c[1]] == 0:
+                                        break
+                                    elif self.board[x + c[0], y + c[1]] == st:
+                                        return False
                                 
         return True
     
@@ -231,11 +233,6 @@ class Game:
                     pygame.draw.circle(self.screen,(255,255,255),(235+(70*x),185+(70*y)),30)
                 elif self.board[x,y]==2:
                     pygame.draw.circle(self.screen,(0,0,0),(235+(70*x),185+(70*y)),30)
-                else:
-                    pass
-        
-                    
-                
     
     def banDataDraw(self): #盤面情報描画 盤面描画とまとめた
         pass
@@ -245,7 +242,6 @@ class Game:
     
     def recordDraw(self): #勝敗結果描画
         font=pygame.font.Font(None,150)
-        #pygame.draw.rect(self.screen,(255,255,255),(230,350,500,130))
         #if
         lose=font.render("player:lose",True,(0,0,0))
         pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
