@@ -78,6 +78,9 @@ class Game:
         self.stonek = [2, 2] #石数カウント　白　黒
         self.win = True # True:プレイヤーの勝ち False:AIの勝ち
         self.plsc = True
+        self.AImoveDrawfont = pygame.font.Font("ipaexg.ttf", 100)
+        self.banDrawfont = pygame.font.Font(None, 50)
+        self.recordDrawfont = pygame.font.Font(None,150)
     
     def update(self):
         if not self.endflag:
@@ -210,19 +213,16 @@ class Game:
         self.stonek = [np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 2)]
         
     def AImoveDraw(self): # AI思考中の表示
-        font = pygame.font.Font("ipaexg.ttf", 100)
-        AImove = font.render("～AI思考中～",True,(0,0,0))
+        AImove = self.AImoveDrawfont.render("～AI思考中～",True,(0,0,0))
         pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
         self.screen.blit(AImove,[185, 365])
 
 #====================================作ってもらうやつここから
     
     def banDraw(self): #盤面描画
-        font=pygame.font.Font(None,50)
-        self.screen.fill((0,0,0))
         pygame.draw.rect(self.screen,(0,100,0),(200,150,560,560)) #緑のやつ
         #勝率表示
-        grades=font.render("win:"+str(1)+" lose:"+str(1)+" draw:"+str(1),True,(255,255,255))
+        grades = self.banDrawfont.render("win:"+str(1)+" lose:"+str(1)+" draw:"+str(1),True,(255,255,255))
         self.screen.blit(grades,[300,100])
 
         #縦線
@@ -233,15 +233,15 @@ class Game:
             pygame.draw.line(self.screen,0xFFFFFF,(200,ypos),(760,ypos))
 
         if self.playerflag == True:
-            text=font.render("Turn:prayer",True,(255,255,255))
+            text = self.banDrawfont.render("Turn:prayer",True,(255,255,255))
             self.screen.blit(text,[800,300])
         else:
-            text=font.render("Turn:AI",True,(255,255,255))
+            text = self.banDrawfont.render("Turn:AI",True,(255,255,255))
             self.screen.blit(text,[800,300])
         #白の数,黒の数を表示
-        black_count=font.render("black:"+str(self.stonek[1]),True,(255,255,255)) #変数を入れる
+        black_count = self.banDrawfont.render("black:"+str(self.stonek[1]),True,(255,255,255)) #変数を入れる
         self.screen.blit(black_count,[800,350])
-        white_count=font.render("white:"+str(self.stonek[0]),True,(255,255,255)) #変数を入れる
+        white_count = self.banDrawfont.render("white:"+str(self.stonek[0]),True,(255,255,255)) #変数を入れる
         self.screen.blit(white_count,[800,400])
     
     def stoneDraw(self): #石描画
@@ -253,13 +253,12 @@ class Game:
                     pygame.draw.circle(self.screen,(0,0,0),(235+(70*y),185+(70*x)),30)
     
     def recordDraw(self): #勝敗結果描画
-        font=pygame.font.Font(None,150)
         if self.win:
-            win=font.render("player:win",True,(0,0,0))
+            win = self.recordDrawfont.render("player:win",True,(0,0,0))
             pygame.draw.rect(self.screen,(255,255,255),(180,350,600,140))
             self.screen.blit(win,[200,358])
         else:
-            win=font.render("AI:win",True,(0,0,0))
+            win = self.recordDrawfont.render("AI:win",True,(0,0,0))
             pygame.draw.rect(self.screen,(255,255,255),(230,350,500,110))
             self.screen.blit(win,[300,358])
     
