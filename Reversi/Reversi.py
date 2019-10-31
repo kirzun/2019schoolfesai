@@ -70,7 +70,7 @@ class Game:
         self.screen = None
         self.board = np.zeros(8*8).reshape(8, 8)
         self.board[3:5, 3:5] = [[1, 2], [2, 1]]
-        self.stonecolor = True #True:白 False:黒
+        self.stonecolor = False #True:白 False:黒
         self.setpos = np.zeros(2)
         self.cb = np.array(([-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, 1], [1, -1]))
         self.endcount = 0
@@ -89,7 +89,7 @@ class Game:
                 if self.endcount == 2:
                     self.endflag = True
                     if self.plsc:
-                        if self.stonek[0] < self.stonek[1]:
+                        if self.stonek[0] > self.stonek[1]:
                             self.win = False
                 elif self.playerflag:
                     self.stonecolor, self.playerflag = not(self.stonecolor), not(self.playerflag)
@@ -110,6 +110,7 @@ class Game:
         self.screen = screen
         self.banDraw()
         self.stoneDraw()
+        self.setPosDraw()
         if not self.playerflag:
             self.AImoveDraw()
         if self.endflag:
@@ -209,6 +210,28 @@ class Game:
                                 
         return True
     
+    def setPos(self): #置ける場所探し
+        pos = []
+        for x in range(0, 8):
+            for y in range(0, 8):
+                if self.board[x, y] == 0:
+                    for i, tc in enumerate(self.cb):
+                        c = tc.copy()
+                        if 0 <= x + c[0] <= 7 and 0 <= y + c[1] <= 7:
+                            nst = self.board[x + c[0], y + c[1]]
+                            if nst != 0 and nst != self.stonecolor:
+                                for j in range(1, 8):
+                                    c += self.cb[i]
+                                    if not 0 <= x + c[0] <= 7 or not 0 <= y + c[1] <= 7:
+                                        break
+                                    elif self.board[x + c[0], y + c[1]] == 0:
+                                        break
+                                    elif self.board[x + c[0], y + c[1]] == self.stonecolor:
+                                        pos.append([x, y])
+                                        break
+                                    
+        return pos
+    
     def stoneCount(self): #石数カウント
         self.stonek = [np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 2)]
         
@@ -261,6 +284,9 @@ class Game:
             win = self.recordDrawfont.render("AI:win",True,(0,0,0))
             pygame.draw.rect(self.screen,(255,255,255),(230,350,500,110))
             self.screen.blit(win,[300,358])
+            
+    def setPosDraw(self): #置ける場所表示
+        pos = self.setPos() #置ける場所の座標を持ってくる処理
     
 #====================================ここまで
             
