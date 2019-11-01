@@ -197,8 +197,8 @@ class reversiAI:
         if k % 2 == 1:
             k -= 1
         self.count = 0
-        #print("---------------------")
-        #print(k)
+        print("---------------------")
+        print(k)
         self.move = stone
         return self.NegaScout(board, None, stone, -float("inf"), float("inf"), k)
         
