@@ -50,7 +50,7 @@ class reversiAI:
     def NegaScout(self, board, pos, stone, a, b, depth): #ネガスカウト法
         maxv, minv, v, Mpos, stc, stcr = -float("inf"), float("inf"), -float("inf"), [0, 0], 2, 1
         self.count += 1
-        if self.count % 1000 == 0:
+        #if self.count % 1000 == 0:
             #print(self.count)
         if stone:
             stc = 1
