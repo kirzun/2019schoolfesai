@@ -258,7 +258,7 @@ class Game:
             pygame.draw.line(self.screen,0xFFFFFF,(200,ypos),(760,ypos))
 
         if self.playerflag == True:
-            text = self.banDrawfont.render("Turn:prayer",True,(255,255,255))
+            text = self.banDrawfont.render("Turn:player",True,(255,255,255))
             self.screen.blit(text,[800,300])
         else:
             text = self.banDrawfont.render("Turn:AI",True,(255,255,255))
