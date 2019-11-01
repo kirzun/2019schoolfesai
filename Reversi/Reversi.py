@@ -16,7 +16,6 @@ def main():
     pygame.display.set_caption("Reversi")
     clock = pygame.time.Clock()
     Gameflag = True
-    fpsfont = pygame.font.Font(None, 48)
     titlemenu = TitleMenu()
     game = Game()
     while (1):
@@ -27,7 +26,6 @@ def main():
         else:
             game.update()
             game.draw(screen)
-        screen.blit(fpsfont.render(str(int(clock.get_fps())), True, (50,250,50)), (970, 15))
         pygame.display.update()#画面を更新
         screen.fill((0,0,0))
         keys = pygame.key.get_pressed()#キー処理
@@ -249,7 +247,7 @@ class Game:
     def banDraw(self): #盤面描画
         pygame.draw.rect(self.screen,(0,100,0),(200,150,560,560)) #緑のやつ
         #勝率表示
-        grades = self.banDrawfont.render("win:"+str(1)+" lose:"+str(1)+" draw:"+str(1),True,(255,255,255))
+        grades = self.banDrawfont.render("win:"+str(0)+" lose:"+str(0)+" draw:"+str(0),True,(255,255,255))
         self.screen.blit(grades,[300,100])
 
         #縦線
