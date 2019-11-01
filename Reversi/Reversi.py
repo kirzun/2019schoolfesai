@@ -212,6 +212,10 @@ class Game:
     
     def setPos(self): #置ける場所探し
         pos = []
+        if self.stonecolor:
+            st = 1
+        else:
+            st = 2
         for x in range(0, 8):
             for y in range(0, 8):
                 if self.board[x, y] == 0:
@@ -219,14 +223,14 @@ class Game:
                         c = tc.copy()
                         if 0 <= x + c[0] <= 7 and 0 <= y + c[1] <= 7:
                             nst = self.board[x + c[0], y + c[1]]
-                            if nst != 0 and nst != self.stonecolor:
+                            if nst != 0 and nst != st:
                                 for j in range(1, 8):
                                     c += self.cb[i]
                                     if not 0 <= x + c[0] <= 7 or not 0 <= y + c[1] <= 7:
                                         break
                                     elif self.board[x + c[0], y + c[1]] == 0:
                                         break
-                                    elif self.board[x + c[0], y + c[1]] == self.stonecolor:
+                                    elif self.board[x + c[0], y + c[1]] == st:
                                         pos.append([x, y])
                                         break
                                     

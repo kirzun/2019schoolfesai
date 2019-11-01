@@ -51,7 +51,7 @@ class reversiAI:
         maxv, minv, v, Mpos, stc, stcr = -float("inf"), float("inf"), -float("inf"), [0, 0], 2, 1
         self.count += 1
         if self.count % 1000 == 0:
-            #print(self.count)
+            print(self.count)
         if stone:
             stc = 1
             stcr = 2
@@ -197,8 +197,8 @@ class reversiAI:
         if k % 2 == 1:
             k -= 1
         self.count = 0
-        #print("---------------------")
-        #print(k)
+        print("---------------------")
+        print(k)
         self.move = stone
         return self.NegaScout(board, None, stone, -float("inf"), float("inf"), k)
         
