@@ -291,7 +291,9 @@ class Game:
             
     def setPosDraw(self): #置ける場所表示
         pos = self.setPos() #置ける場所の座標を持ってくる処理
-    
+        for xy in pos:
+            pygame.draw.circle(self.screen,(0,0,0),(235+(70*xy[1]),185+(70*xy[0])),10)
+
 #====================================ここまで
             
 def load_image(filename, colorkey=None):
