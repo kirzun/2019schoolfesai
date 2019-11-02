@@ -36,7 +36,8 @@ def main():
             game.playerflag = False
             game.plsc = False
         for event in pygame.event.get():#イベント処理
-            if (event.type == QUIT) | ((Gameflag) & (keys[K_q])):#閉じるボタンが押されたら終了
+            #if (event.type == QUIT) | ((Gameflag) & (keys[K_q])):#閉じるボタンが押されたら終了
+            if event.type == QUIT:#閉じるボタンが押されたら終了
                 pygame.quit()#Pygameの終了
                 sys.exit()
             elif (not Gameflag) & (keys[K_q]):
@@ -49,7 +50,7 @@ class TitleMenu:
         self.menufont = pygame.font.Font("ipaexg.ttf", 48)
         self.gmenu1 = self.menufont.render("先攻:ENTER", True, (160,190,230), (10,10,10))
         self.gmenu2 = self.menufont.render("後攻:SPACE", True, (160,190,230), (10,10,10))
-        self.qmenu = self.menufont.render("終了:Q", True, (160,190,230), (10,10,10))
+        #self.qmenu = self.menufont.render("終了:Q", True, (160,190,230), (10,10,10))
     
     def update(self):
         pass
@@ -60,7 +61,7 @@ class TitleMenu:
         screen.blit(self.image, (x, y))
         screen.blit(self.gmenu1, (380, 425))
         screen.blit(self.gmenu2, (380, 475))
-        screen.blit(self.qmenu, (380, 525))
+        #screen.blit(self.qmenu, (380, 525))
     
 class Game:
     def __init__(self):
