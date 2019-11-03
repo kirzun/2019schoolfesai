@@ -115,7 +115,7 @@ class reversiAI:
                     Mpos = child[1]
                     
             return maxv, Mpos[0]
-            
+        
         else:
             minv = v = self.NegaScout(child[0][0], child[1], not(stone), a, b, depth - 1)[0]
 
@@ -135,12 +135,13 @@ class reversiAI:
                         return v, None
                     elif b > v:
                         b = v
+                    
                 if minv > v:
                     minv = v
                     Mpos = child[1]
                     
             return minv, Mpos[0]
-    
+        
     def EC(self, board, stone, nst): #着手可能なマスを見つける
         pos = []
         for x in range(0, 8):
@@ -192,10 +193,18 @@ class reversiAI:
         return eva
         
     def play(self, board, stone):
+        """
         k = np.count_nonzero(board == 0)
-        k = 8 - k // 10
-        if k % 2 == 1:
-            k -= 1
+        if k <= 10:
+            k = 8
+        elif 10 < k <= 20:
+            k = 6
+        elif 20 < k <= 40:
+            k = 4
+        else:
+            k = 2
+        """
+        k = 2
         self.count = 0
         print("---------------------")
         print(k)
